@@ -10,19 +10,18 @@ function App() {
   const [newTask, setNewTask] = useState("");
 
   // Fetch tasks from backend
-  // useEffect(() => {
-  //   axios.get(API_URL)
-  //     .then((res) => setTasks(res.data))
-  //     .catch((err) => console.error(err));
-  // }, []);
+  useEffect(() => {
+    axios.get(API_URL)
+      .then((res) => setTasks(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   // Add a new task
   const addTask = async () => {
-    // if (!newTask.trim()) return;
-    // const res = await axios.post(API_URL, { text: newTask });
-    setTasks([...tasks, newTask]);
+    if (!newTask.trim()) return;
+    const res = await axios.post(API_URL, { text: newTask });
+    setTasks([...tasks, res.data]);
     setNewTask("");
-    console.log("Task added:", newTask);
   };
 
   // Toggle task completion
@@ -33,9 +32,8 @@ function App() {
 
   // Delete a task
   const deleteTask = async (id) => {
-    // await axios.delete(`${API_URL}/${id}`);
+    await axios.delete(`${API_URL}/${id}`);
     setTasks(tasks.filter(task => task._id !== id));
-    console.log("Task deleted:", id);
   };
 
   return (
@@ -54,7 +52,7 @@ function App() {
         {tasks.map((task) => (
           <li key={task._id} className={task.completed ? "completed" : ""}>
             <span onClick={() => toggleTask(task._id, task.completed)}>
-              {task}
+              {task.text}
             </span>
             <div className="actions">
               <FaCheck className="check" onClick={() => toggleTask(task._id, task.completed)} />
@@ -67,4 +65,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
